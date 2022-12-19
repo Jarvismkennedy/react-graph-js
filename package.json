@@ -4,7 +4,7 @@
   "description": "DESCRIPTION",
   "repository": "https://github.com/Jarvismkennedy/graphjs.git",
   "author": "Jarvis Kennedy",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
   "private": false,
   "main": "lib/index.js",
   "module": "lib/index.esm.js",
