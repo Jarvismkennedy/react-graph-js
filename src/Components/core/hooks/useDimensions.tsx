@@ -1,12 +1,8 @@
 import { useMemo } from 'react';
 import { margin } from '../types';
 
-export interface useDimensionsProps {
-    width: number;
-    height: number;
-    margin: margin;
-}
-export default function useDimensions({ width, height, margin }: useDimensionsProps) {
+/** returns [innerWidht, innerHeight, outerWidth, outerHeight] by taking into account the margins */
+export default function useDimensions(width: number, height: number, margin: margin) {
     const [innerWidth, innerHeight, outerWidth, outerHeight] = useMemo(() => {
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
