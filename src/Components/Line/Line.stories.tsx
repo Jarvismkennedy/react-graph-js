@@ -15,8 +15,12 @@ const Template: Story<LineProps> = args => <Line {...args} />;
 export const Primary = Template.bind({});
 Primary.args = {
     data: [series1, series2],
-    margin: { top: 10, left: 10, right: 10, bottom: 10 },
+    width: 500,
+    height: 700,
+    margin: { top: 0, left: 0, right: 0, bottom: 0 },
+    drawPathConfig: {
+        animate: true,
+        loop: false,
+        durationms: 2000,
+    },
 };
-
-export const Secondary = Template.bind({});
-Secondary.args = { data: [{ id: 'secondary', data: [] }] };

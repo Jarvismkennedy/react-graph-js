@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import useDimensions from '../core/hooks/useDimensions';
 import usePassedRef from '../core/hooks/usePassedRef';
 import { margin } from '../core/types';
-import { Series } from './types';
+import { Series, DrawPathConfig } from './types';
 import useLine from './hooks/useLine';
 import useLineSeriesFormatter from './hooks/useLineSeriesFormatter';
+import usePaths from './hooks/usePaths';
+import useDrawLines from './hooks/useDrawLines';
 
 // This is going to be canvas Line.
 // to do: everything... implement canvas rendering methods for every layer.
@@ -23,6 +25,9 @@ export interface LineProps {
     curve?: string; // You should list out all the supported curve types here.
     xFormat?: string;
     yFormat?: string;
+    durationms?: number;
+    lineWidth?: number;
+    drawPathConfig: DrawPathConfig;
 }
 
 export default function Line({
@@ -34,28 +39,45 @@ export default function Line({
     curve = '',
     xFormat = 'number',
     yFormat = 'number',
+    drawPathConfig = { loop: false, animate: false, durationms: 1 },
 }: LineProps) {
     const [innerWidth, innerHeight, outerWidth, outerHeight] = useDimensions(width, height, margin);
     const elmRef = usePassedRef<HTMLCanvasElement>(canvasRef);
-
+    console.log(outerWidth, outerHeight, width, height);
+    // put this all in one hook
     const lineRenderer = useLine(curve);
     const series = useLineSeriesFormatter(data, xFormat, yFormat, innerWidth, innerHeight);
+    const paths = usePaths(series, lineRenderer);
+    //
+    const drawPercentage = useDrawLines(drawPathConfig);
 
     useEffect(() => {
         const canvas = elmRef.current;
         if (!canvas) return;
         const context = canvas.getContext('2d');
         if (!context) return;
+        // transform context back to origin before clearing;
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.clearRect(0, 0, canvas.width, canvas.height);
         context.translate(margin.left, margin.top);
-        lineRenderer.context(context);
-        series.forEach(serie => {
-            context.strokeStyle = serie.color;
-            context.lineWidth = serie.lineWidth;
+    }, [elmRef, margin.left, margin.top, margin.bottom, margin.right]);
+
+    useEffect(() => {
+        const canvas = elmRef.current;
+        if (!canvas) return;
+        const context = canvas.getContext('2d');
+        if (!context) return;
+        context.clearRect(0, 0, innerWidth, innerHeight);
+        paths.forEach(path => {
             context.beginPath();
-            lineRenderer(serie.data);
-            context.stroke();
+            context.strokeStyle = path.color;
+            context.lineWidth = path.lineWidth;
+            context.setLineDash([path.pathLength]);
+            context.lineDashOffset = path.pathLength - path.pathLength * drawPercentage;
+            const d = new Path2D(path.path);
+            context.stroke(d);
         });
-    }, [data, elmRef, lineRenderer, series]);
+    }, [elmRef, paths, drawPercentage, innerWidth, innerHeight]);
 
     return (
         <canvas

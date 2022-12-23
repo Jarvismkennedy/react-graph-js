@@ -1,8 +1,8 @@
-export interface cartesianPoint {
+export interface CartesianPoint {
     x: string | number;
     y: string | number;
 }
-export interface formattedCartesianPoint {
+export interface FormattedCartesianPoint {
     x: number;
     y: number;
 }
@@ -11,5 +11,16 @@ export interface Series {
     color?: string;
     lineWidth?: number;
     id: string;
-    data: Array<cartesianPoint>;
+    data: Array<CartesianPoint>;
+}
+export interface FormattedSeries {
+    color: string;
+    lineWidth: number;
+    id: string;
+    data: Array<FormattedCartesianPoint>;
+}
+export interface DrawPathConfig {
+    animate: boolean;
+    durationms: number;
+    loop: boolean;
 }

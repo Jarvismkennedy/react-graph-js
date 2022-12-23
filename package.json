@@ -51,6 +51,7 @@
     "build": "rollup -c --bundleConfigAsCjs"
   },
   "dependencies": {
-    "d3-shape": "^3.1.0"
+    "d3-shape": "^3.1.0",
+    "svg-path-properties": "^1.1.0"
   }
 }

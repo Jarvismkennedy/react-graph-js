@@ -40,8 +40,20 @@ export default function useLineSeriesFormatter(
                 lineWidth: series.lineWidth,
                 id: series.id,
                 data: series.data.map(dp => ({
-                    x: convertPointToPixelScale(dp.x - minX, width, maxX - minX),
-                    y: height - convertPointToPixelScale(dp.y - minY, height, maxY - minY),
+                    x:
+                        convertPointToPixelScale(
+                            dp.x - minX,
+                            width - 2 * series.lineWidth,
+                            maxX - minX
+                        ) + series.lineWidth,
+                    y:
+                        height -
+                        convertPointToPixelScale(
+                            dp.y - minY,
+                            height - 2 * series.lineWidth,
+                            maxY - minY
+                        ) -
+                        series.lineWidth,
                 })),
             };
         });

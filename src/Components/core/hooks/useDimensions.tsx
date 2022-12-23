@@ -7,7 +7,7 @@ export default function useDimensions(width: number, height: number, margin: mar
         const innerWidth = width - margin.left - margin.right;
         const innerHeight = height - margin.top - margin.bottom;
         return [innerWidth, innerHeight, width, height];
-    }, [width, height, margin]);
+    }, [width, height, margin.left, margin.top, margin.right, margin.bottom]);
 
     return [innerWidth, innerHeight, outerWidth, outerHeight];
 }
