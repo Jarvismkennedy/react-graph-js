@@ -41,11 +41,13 @@ export default function Line({
     const [innerWidth, innerHeight, outerWidth, outerHeight] = useDimensions(width, height, margin);
     const elmRef = usePassedRef<HTMLCanvasElement>(canvasRef);
     console.log(outerWidth, outerHeight, width, height);
+
     // put this all in one hook
     const lineRenderer = useLine(curve);
     const series = useLineSeriesFormatter(data, xFormat, yFormat, innerWidth, innerHeight);
     const paths = usePaths(series, lineRenderer);
     //
+
     const drawPercentage = useDrawLines(drawPathConfig);
 
     useEffect(() => {
@@ -57,8 +59,6 @@ export default function Line({
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.translate(margin.left, margin.top);
-
-        //renderPathsToCanvas(paths, context, drawPercentage);
     }, [elmRef, margin.left, margin.top, margin.bottom, margin.right]);
 
     useEffect(() => {

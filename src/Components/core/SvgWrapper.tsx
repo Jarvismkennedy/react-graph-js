@@ -7,13 +7,9 @@ export interface SvgWrapperProps {
     margin: margin;
     children: React.ReactNode;
 }
-// Need to implement Svg version of the graphs. First working on canvas version because its better for print to pdf.
+// Need to implement Svg version of the graphs. First work on canvas version because its better for print to pdf.
 export default function SvgWrapper({ width, height, margin, children }: SvgWrapperProps) {
-    const [innerWidth, innerHeight, outerWidth, outerHeight] = useDimensions({
-        width,
-        height,
-        margin,
-    });
+    const [innerWidth, innerHeight, outerWidth, outerHeight] = useDimensions(width, height, margin);
 
     return (
         <svg width={outerWidth} height={outerHeight}>
