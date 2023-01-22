@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import useDimensions from '../core/hooks/useDimensions';
 import usePassedRef from '../core/hooks/usePassedRef';
 import { margin } from '../core/types';
-import { Series, DrawPathConfig } from './types';
+import { Series, DrawPathConfig, Path } from './types';
 import useLine from './hooks/useLine';
 import useLineSeriesFormatter from './hooks/useLineSeriesFormatter';
 import usePaths from './hooks/usePaths';
@@ -10,8 +10,6 @@ import useDrawLines from './hooks/useDrawLines';
 
 // This is going to be canvas Line.
 // to do: everything... implement canvas rendering methods for every layer.
-// should have ability to pass a canvas ref to Line rather than Line generating its own ref
-// so that its easier to print to pdf.
 // use d-3 to generate the shapes.
 // then think of how to do this in 3 dimensions. maybe need to implement my own render methods if d3 doesnt have any.
 //
@@ -25,7 +23,6 @@ export interface LineProps {
     curve?: string; // You should list out all the supported curve types here.
     xFormat?: string;
     yFormat?: string;
-    durationms?: number;
     lineWidth?: number;
     drawPathConfig: DrawPathConfig;
 }
@@ -60,6 +57,8 @@ export default function Line({
         context.setTransform(1, 0, 0, 1, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
         context.translate(margin.left, margin.top);
+
+        //renderPathsToCanvas(paths, context, drawPercentage);
     }, [elmRef, margin.left, margin.top, margin.bottom, margin.right]);
 
     useEffect(() => {
@@ -68,15 +67,7 @@ export default function Line({
         const context = canvas.getContext('2d');
         if (!context) return;
         context.clearRect(0, 0, innerWidth, innerHeight);
-        paths.forEach(path => {
-            context.beginPath();
-            context.strokeStyle = path.color;
-            context.lineWidth = path.lineWidth;
-            context.setLineDash([path.pathLength]);
-            context.lineDashOffset = path.pathLength - path.pathLength * drawPercentage;
-            const d = new Path2D(path.path);
-            context.stroke(d);
-        });
+        renderPathsToCanvas(paths, context, drawPercentage);
     }, [elmRef, paths, drawPercentage, innerWidth, innerHeight]);
 
     return (
@@ -88,3 +79,19 @@ export default function Line({
         />
     );
 }
+
+const renderPathsToCanvas = (
+    paths: Path[],
+    context: CanvasRenderingContext2D,
+    drawPercentage: number
+) => {
+    paths.forEach(path => {
+        context.beginPath();
+        context.strokeStyle = path.color;
+        context.lineWidth = path.lineWidth;
+        context.setLineDash([path.pathLength]);
+        context.lineDashOffset = path.pathLength - path.pathLength * drawPercentage;
+        const d = new Path2D(path.path);
+        context.stroke(d);
+    });
+};

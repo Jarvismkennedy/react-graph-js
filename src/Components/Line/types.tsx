@@ -24,3 +24,12 @@ export interface DrawPathConfig {
     durationms: number;
     loop: boolean;
 }
+
+export interface Path {
+    id: string;
+    color: string;
+    lineWidth: number;
+    data: FormattedCartesianPoint[];
+    path: string;
+    pathLength: number;
+}
